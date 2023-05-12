@@ -35,7 +35,7 @@
                         </thead>
                         <tbody>
                             <!-- Tabla de participantes-->
-                            <xsl:for-each select="//participante[puntos>=20]">
+                            <xsl:for-each select="//participante[puntos&gt;=20]">
                                 <xsl:sort select="puntos" order="descending"/>
                                 <xsl:if test="position()&lt;5">
                                     <tr>
@@ -52,9 +52,9 @@
                         <ul>
                             <li><span>Número total de participantes:</span> <span class="stats"><xsl:value-of select="count(//participante)"/></span></li>
                             <li><span>Puntuación media:</span> <span class="stats"><xsl:value-of select="round((sum(//participante/puntos) div count(//participante))*10) div 10 "/></span></li>
-                            <li><span>Participantes de 18 a 35 años:</span> <span class="stats"><xsl:value-of select="count(//participante[edad >= 18 and edad <=35])"/> (<xsl:value-of select="count(//participante[edad >= 18 and edad <=35])*100 div count(//participante)"/>%)</span></li> 
-                            <li><span>Participantes de 36 a 55 años:</span> <span class="stats"><xsl:value-of select="count(//participante[edad >= 36 and edad <=55])"/> (<xsl:value-of select="count(//participante[edad >= 36 and edad <=55])*100 div count(//participante)"/>%)</span></li>
-                            <li><span>Participantes de más de 55 años:</span> <span class="stats"><xsl:value-of select="count(//participante[edad > 55])"/>(<xsl:value-of select="count(//participante[edad > 55])*100 div count(//participante)"/>%)</span></li>
+                            <li><span>Participantes de 18 a 35 años:</span> <span class="stats"><xsl:value-of select="count(//participante[edad &gt;= 18 and edad &lt;=35])"/> (<xsl:value-of select="format-number(count(//participante[edad &gt;= 18 and edad &lt;=35])*100 div count(//participante), '0.00')"/>%)</span></li> 
+                            <li><span>Participantes de 36 a 55 años:</span> <span class="stats"><xsl:value-of select="count(//participante[edad &gt;= 36 and edad &lt;=55])"/> (<xsl:value-of select="format-number(count(//participante[edad &gt;= 36 and edad &lt;=55])*100 div count(//participante), '0.00')"/>%)</span></li>
+                            <li><span>Participantes de más de 55 años:</span> <span class="stats"><xsl:value-of select="count(//participante[edad &gt;= 55])"/>(<xsl:value-of select="format-number(count(//participante[edad &gt; 55])*100 div count(//participante), '0.00')"/>%)</span></li>
                         </ul>
                         <table class="participantes-t">
                             <thead>
@@ -65,10 +65,12 @@
                             </thead>
                             <tbody>
                                 <!-- Tabla de participantes por provincia -->
-                                <xsl:for-each select="distinct-values(//participante/provincia)">
+                                <xsl:for-each select="//participante[not (provincia=preceding::provincia)]">
+                                <xsl:sort select="provincia"/>
+                                <xsl:variable select="provincia" name="v_prov"/>
                                     <tr>
-                                        <td><xsl:value-of select="//participante/provincia"/></td>
-                                        <td><xsl:value-of select="count(//participante[provincia = current()])"/></td>
+                                        <td><xsl:value-of select="provincia"/></td>
+                                        <td><xsl:value-of select="count(//participante[provincia = $v_prov])"/></td>
                                     </tr>
                                 </xsl:for-each>
                             </tbody>
